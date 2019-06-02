@@ -18,19 +18,46 @@ public class AudioFocus extends CordovaPlugin {
             return true;
         }
 
+        if (action.equals("abandonFocus")) {
+            this.abandonFocus(callbackContext);
+            return true;
+        }
         return false;
     }
 
     private void requestFocus(CallbackContext callbackContext) {
         // get AudioManager
-        AudioManager am = (AudioManager)this.cordova.getActivity()
-                                    .getApplicationContext()
-                                    .getSystemService(Context.AUDIO_SERVICE);
+        AudioManager am = (AudioManager) this.cordova.getActivity().getApplicationContext()
+                .getSystemService(Context.AUDIO_SERVICE);
 
         // request audio focus
-        int result = am.requestAudioFocus(null,
-                                        AudioManager.STREAM_MUSIC,
-                                        AudioManager.AUDIOFOCUS_GAIN);
+        // int result = am.requestAudioFocus(null,
+        // AudioManager.STREAM_MUSIC,
+        // AudioManager.AUDIOFOCUS_GAIN);
+        int result = am.requestAudioFocus(null, AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
+
+        // return result
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            callbackContext.success("");
+        } else {
+            callbackContext.error("");
+        }
+    }
+
+    private void abandonFocus(CallbackContext callbackContext) {
+        // get AudioManager
+        AudioManager am = (AudioManager) this.cordova.getActivity().getApplicationContext()
+                .getSystemService(Context.AUDIO_SERVICE);
+
+        // AudioFocusRequest mFocusRequest =
+        // AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        // request audio focus
+        // int result = am.abandonAudioFocusRequest(null,
+        // AudioManager.STREAM_MUSIC,
+        // AudioManager.AUDIOFOCUS_GAIN);
+
+        int result = am.abandonAudioFocus(null);
 
         // return result
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
